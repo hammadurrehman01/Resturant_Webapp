@@ -10,6 +10,11 @@ export async function fetchMenu() {
   return res.data.menu;
 }
 
+export async function fetchDeals() {
+  const res = await api.get(`/deals/public/${RESTAURANT_SLUG}`);
+  return res.data.deals;
+}
+
 export async function placeOrder(payload) {
   const res = await api.post(`/orders/public/${RESTAURANT_SLUG}`, payload);
   return res.data.order;

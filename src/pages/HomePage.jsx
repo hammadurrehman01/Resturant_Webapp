@@ -1,12 +1,15 @@
 import { Link } from 'react-router-dom';
 import useRestaurant from '../hooks/useRestaurant.js';
 import useMenu from '../hooks/useMenu.js';
+import useDeals from '../hooks/useDeals.js';
 import MenuItemCard from '../components/menu/MenuItemCard.jsx';
+import DealCard from '../components/deals/DealCard.jsx';
 import Spinner from '../components/ui/Spinner.jsx';
 
 export default function HomePage() {
   const { restaurant } = useRestaurant();
   const { menu, loading } = useMenu();
+  const { deals, loading: dealsLoading } = useDeals();
 
   // "Featured" = first 4 items across all categories (cheap heuristic for the
   // homepage hero strip; admin can later tag items as featured if desired).
@@ -46,6 +49,27 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ---- Deals ---- */}
+      {dealsLoading ? (
+        <section>
+          <div className="flex justify-center py-6"><Spinner /></div>
+        </section>
+      ) : deals && deals.length > 0 ? (
+        <section>
+          <div className="mb-4 flex items-end justify-between">
+            <div>
+              <h2 className="text-xl font-semibold">🔥 Hot Deals</h2>
+              <p className="mt-0.5 text-sm text-stone-500">Limited-time offers you don't want to miss</p>
+            </div>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {deals.map((deal) => (
+              <DealCard key={deal._id} deal={deal} currency={restaurant?.currency} />
+            ))}
+          </div>
+        </section>
+      ) : null}
+
       <section>
         <div className="mb-4 flex items-end justify-between">
           <h2 className="text-xl font-semibold">Popular right now</h2>
@@ -83,3 +107,4 @@ function Feature({ title, body }) {
     </div>
   );
 }
+
