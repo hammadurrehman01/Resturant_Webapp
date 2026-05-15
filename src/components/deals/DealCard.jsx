@@ -48,6 +48,14 @@ export default function DealCard({ deal, currency = 'PKR' }) {
         {deal.description && (
           <p className="mt-1 line-clamp-2 text-sm text-stone-600">{deal.description}</p>
         )}
+        
+        {deal.price > 0 && (
+          <div className="mt-3 flex items-center gap-2">
+            <span className="text-xl font-bold text-brand-600">{formatMoney(deal.price, currency)}</span>
+            <span className="text-xs font-medium text-stone-400">Limited time deal</span>
+          </div>
+        )}
+
         {timeLabel && (
           <div className="mt-2 inline-flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-800">
             <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

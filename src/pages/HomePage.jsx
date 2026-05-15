@@ -2,14 +2,20 @@ import { Link } from 'react-router-dom';
 import useRestaurant from '../hooks/useRestaurant.js';
 import useMenu from '../hooks/useMenu.js';
 import useDeals from '../hooks/useDeals.js';
+import useTrending from '../hooks/useTrending.js';
+import useRunning from '../hooks/useRunning.js';
 import MenuItemCard from '../components/menu/MenuItemCard.jsx';
 import DealCard from '../components/deals/DealCard.jsx';
+import FeaturedItemCard from '../components/home/FeaturedItemCard.jsx';
+import ReviewsSection from '../components/reviews/ReviewsSection.jsx';
 import Spinner from '../components/ui/Spinner.jsx';
 
 export default function HomePage() {
   const { restaurant } = useRestaurant();
   const { menu, loading } = useMenu();
   const { deals, loading: dealsLoading } = useDeals();
+  const { items: trending, loading: trendingLoading } = useTrending();
+  const { items: running, loading: runningLoading } = useRunning();
 
   // "Featured" = first 4 items across all categories (cheap heuristic for the
   // homepage hero strip; admin can later tag items as featured if desired).
@@ -70,6 +76,42 @@ export default function HomePage() {
         </section>
       ) : null}
 
+      {/* ---- Trending Items ---- */}
+      {trendingLoading ? (
+        <section><div className="flex justify-center py-6"><Spinner /></div></section>
+      ) : trending && trending.length > 0 ? (
+        <section>
+          <div className="mb-4">
+            <h2 className="text-xl font-semibold italic text-brand-700">⭐ Trending Now</h2>
+            <p className="text-sm text-stone-500">The crowd favorites this week</p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {trending.map((item) => (
+              <FeaturedItemCard key={item._id} item={item} currency={restaurant?.currency} badge="Trending" />
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {/* ---- Running Items ---- */}
+      {runningLoading ? (
+        <section><div className="flex justify-center py-6"><Spinner /></div></section>
+      ) : running && running.length > 0 ? (
+        <section>
+          <div className="mb-4">
+            <h2 className="text-xl font-semibold flex items-center gap-2">
+              <span className="text-amber-500">⚡</span> Currently Running
+            </h2>
+            <p className="text-sm text-stone-500">Fresh and ready for you today</p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {running.map((item) => (
+              <FeaturedItemCard key={item._id} item={item} currency={restaurant?.currency} badge="Running" />
+            ))}
+          </div>
+        </section>
+      ) : null}
+
       <section>
         <div className="mb-4 flex items-end justify-between">
           <h2 className="text-xl font-semibold">Popular right now</h2>
@@ -89,6 +131,8 @@ export default function HomePage() {
           </div>
         )}
       </section>
+
+      <ReviewsSection />
 
       <section className="grid gap-4 rounded-2xl border border-stone-200 bg-white p-6 sm:grid-cols-3">
         <Feature title="Order in any language" body="Chat with our assistant in English, Urdu, or Roman Urdu — pick what feels natural." />

@@ -15,6 +15,26 @@ export async function fetchDeals() {
   return res.data.deals;
 }
 
+export async function fetchTrending() {
+  const res = await api.get(`/trending/public/${RESTAURANT_SLUG}`);
+  return res.data.items;
+}
+
+export async function fetchRunning() {
+  const res = await api.get(`/running/public/${RESTAURANT_SLUG}`);
+  return res.data.items;
+}
+
+export async function fetchReviews() {
+  const res = await api.get(`/reviews/public/${RESTAURANT_SLUG}`);
+  return res.data.reviews;
+}
+
+export async function submitReview(payload) {
+  const res = await api.post(`/reviews/public/${RESTAURANT_SLUG}`, payload);
+  return res.data.review;
+}
+
 export async function placeOrder(payload) {
   const res = await api.post(`/orders/public/${RESTAURANT_SLUG}`, payload);
   return res.data.order;
