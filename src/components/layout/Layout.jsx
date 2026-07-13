@@ -3,6 +3,7 @@ import Header from './Header.jsx';
 import Footer from './Footer.jsx';
 import CartDrawer from '../cart/CartDrawer.jsx';
 import ChatWidget from '../chatbot/ChatWidget.jsx';
+import OrderStatusNotification from '../ui/OrderStatusNotification.jsx';
 
 export default function Layout() {
   return (
@@ -14,6 +15,7 @@ export default function Layout() {
       <Footer />
       <CartDrawer />
       <ChatWidget />
+      <OrderStatusNotification />
     </div>
   );
 }

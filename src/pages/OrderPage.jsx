@@ -59,6 +59,20 @@ export default function OrderPage() {
         source: 'web',
       });
       setPlaced({ ...order, customerPhone: form.phone.trim() });
+      
+      // Save order to tracked orders for live updates
+      try {
+        const raw = localStorage.getItem('rss_placed_orders');
+        const orders = raw ? JSON.parse(raw) : [];
+        if (!orders.includes(order.orderNumber)) {
+          orders.push(order.orderNumber);
+          localStorage.setItem('rss_placed_orders', JSON.stringify(orders));
+          window.dispatchEvent(new Event('order_placed_sync'));
+        }
+      } catch (err) {
+        console.error('Error saving placed order to tracker:', err);
+      }
+
       clear();
     } catch (err) {
       setError(err.message || 'Failed to place order');

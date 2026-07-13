@@ -4,6 +4,9 @@
 
 :root {
   color-scheme: light;
+  --brand-orange: #ea580c;
+  --brand-amber: #f97316;
+  --brand-dark: #1c0a00;
 }
 
 html, body, #root {
@@ -12,27 +15,140 @@ html, body, #root {
 
 body {
   @apply bg-stone-50 text-stone-900 antialiased;
+  font-feature-settings: 'kern' 1, 'liga' 1;
 }
 
-/* Use Nastaliq for Urdu strings; opt in by giving the element [dir="rtl"] or class `urdu`. */
+/* Urdu / RTL text */
 .urdu, [dir='rtl'] {
   font-family: 'Noto Nastaliq Urdu', 'Jameel Noori Nastaleeq', serif;
   line-height: 2;
 }
 
-/* Reusable utility for the brand button look. */
+/* ---- Design System Buttons ---- */
 .btn-primary {
-  @apply inline-flex items-center justify-center gap-2 rounded-lg bg-brand-600 px-4 py-2 font-medium text-white shadow-sm transition hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60;
+  @apply inline-flex items-center justify-center gap-2 rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-brand-500/30 transition-all duration-200 hover:bg-brand-700 hover:shadow-lg hover:shadow-brand-500/40 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 disabled:translate-y-0;
 }
 .btn-secondary {
-  @apply inline-flex items-center justify-center gap-2 rounded-lg border border-stone-300 bg-white px-4 py-2 font-medium text-stone-800 transition hover:bg-stone-50 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60;
+  @apply inline-flex items-center justify-center gap-2 rounded-xl border border-stone-200 bg-white px-5 py-2.5 text-sm font-semibold text-stone-800 shadow-sm transition-all duration-200 hover:bg-stone-50 hover:border-stone-300 hover:shadow hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60;
 }
+.btn-ghost {
+  @apply inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium text-stone-600 transition-all duration-150 hover:bg-stone-100 hover:text-stone-900;
+}
+
+/* ---- Form elements ---- */
 .input {
-  @apply block w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm shadow-sm placeholder:text-stone-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30;
+  @apply block w-full rounded-xl border border-stone-200 bg-white px-4 py-2.5 text-sm shadow-sm placeholder:text-stone-400 focus:border-brand-400 focus:outline-none focus:ring-4 focus:ring-brand-400/20 transition-all duration-200;
 }
 .label {
-  @apply mb-1 block text-sm font-medium text-stone-700;
+  @apply mb-1.5 block text-sm font-semibold text-stone-700;
 }
+
+/* ---- Cards ---- */
 .card {
-  @apply rounded-xl border border-stone-200 bg-white p-4 shadow-sm;
+  @apply rounded-2xl border border-stone-200 bg-white p-5 shadow-sm;
 }
+.card-glass {
+  @apply rounded-2xl border border-white/20 bg-white/80 backdrop-blur-sm p-5 shadow-lg;
+}
+.card-premium {
+  @apply rounded-2xl bg-white shadow-lg border border-stone-100 overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
+}
+
+/* ---- Section headings ---- */
+.section-badge {
+  @apply inline-flex items-center gap-1.5 rounded-full bg-brand-50 border border-brand-100 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-brand-700;
+}
+.section-title {
+  @apply font-serif text-3xl font-bold tracking-tight text-stone-900;
+}
+.section-subtitle {
+  @apply text-base text-stone-500 mt-2 max-w-lg;
+}
+
+/* ---- Star rating ---- */
+.stars-filled {
+  @apply text-amber-400;
+}
+.stars-empty {
+  @apply text-stone-200;
+}
+
+/* ---- Gradient backgrounds ---- */
+.hero-gradient {
+  background: linear-gradient(135deg, #1c0a00 0%, #431407 40%, #7c2d12 100%);
+}
+.warm-gradient {
+  background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 50%, #fed7aa 100%);
+}
+.card-gradient {
+  background: linear-gradient(135deg, #fffbf7 0%, #fff7ed 100%);
+}
+
+/* ---- Glow effects ---- */
+.glow-orange {
+  box-shadow: 0 0 30px rgba(234, 88, 12, 0.2);
+}
+.glow-amber {
+  box-shadow: 0 0 20px rgba(249, 115, 22, 0.15);
+}
+
+/* ---- Animations ---- */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideUpSm {
+  from { opacity: 0; transform: scale(0.96) translateY(8px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.animate-float { animation: float 3s ease-in-out infinite; }
+.animate-fade-in-up { animation: fadeInUp 0.5s ease-out forwards; }
+.animate-scale-in { animation: scaleIn 0.3s ease-out forwards; }
+.animate-slide-up { animation: slideUp 0.35s cubic-bezier(0.34, 1.3, 0.64, 1) forwards; }
+@media (min-width: 640px) {
+  .animate-slide-up { animation: slideUpSm 0.3s cubic-bezier(0.34, 1.2, 0.64, 1) forwards; }
+}
+
+/* ---- Status badges ---- */
+.badge-pending { @apply inline-flex items-center gap-1 rounded-full bg-amber-50 border border-amber-200 px-2.5 py-0.5 text-xs font-semibold text-amber-800; }
+.badge-approved { @apply inline-flex items-center gap-1 rounded-full bg-green-50 border border-green-200 px-2.5 py-0.5 text-xs font-semibold text-green-800; }
+.badge-trending { @apply inline-flex items-center gap-1 rounded-full bg-brand-600 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white shadow; }
+
+/* ---- Timeline ---- */
+.timeline-step-active { @apply bg-brand-600 text-white shadow-md shadow-brand-500/30; }
+.timeline-step-done { @apply bg-brand-100 text-brand-700; }
+.timeline-step-idle { @apply bg-stone-100 text-stone-400; }
+
+/* ---- Divider ---- */
+.divider { @apply h-px w-full bg-gradient-to-r from-transparent via-stone-200 to-transparent my-2; }
+
+/* ---- Modal backdrop ---- */
+.modal-backdrop {
+  @apply fixed inset-0 z-50 flex items-center justify-center bg-stone-900/60 backdrop-blur-sm p-4;
+}
+.modal-panel {
+  @apply relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl bg-white shadow-2xl animate-scale-in;
+}
+
+/* ---- Scrollbar styling ---- */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { @apply bg-stone-300 rounded-full; }
+::-webkit-scrollbar-thumb:hover { @apply bg-stone-400; }
