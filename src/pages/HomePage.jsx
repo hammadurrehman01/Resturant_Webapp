@@ -11,6 +11,7 @@ import FeaturedItemCard from '../components/home/FeaturedItemCard.jsx';
 import ReviewsSection from '../components/reviews/ReviewsSection.jsx';
 import Spinner from '../components/ui/Spinner.jsx';
 import ItemModal from '../components/ui/ItemModal.jsx';
+import { SkeletonItemCard, SkeletonMenuItemCard, SkeletonDealCard } from '../components/ui/Skeleton.jsx';
 
 // ---- REALISTIC CUSTOM SVG FOOD ICONS ----
 const BurgerIcon = () => (
@@ -113,7 +114,7 @@ const FEATURES = [
 ];
 
 export default function HomePage() {
-  const { restaurant } = useRestaurant();
+  const { restaurant, loading: restaurantLoading } = useRestaurant();
   const { menu, loading } = useMenu();
   const { deals, loading: dealsLoading } = useDeals();
   const { items: trending, loading: trendingLoading } = useTrending();
@@ -167,37 +168,60 @@ export default function HomePage() {
 
       {/* ---- HERO ---- */}
       <section className="relative overflow-hidden rounded-3xl bg-stone-950 text-white shadow-2xl border border-stone-900">
-        {/* Glowing background shapes */}
-        <div className="absolute right-0 top-0 h-96 w-96 rounded-full bg-brand-600/10 blur-3xl" />
-        <div className="absolute left-0 bottom-0 h-72 w-72 rounded-full bg-gold-500/5 blur-3xl" />
+        {/* Subtle food dot pattern texture – fills the dark void */}
+        <svg
+          className="pointer-events-none absolute inset-0 h-full w-full opacity-[0.04]"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <defs>
+            <pattern id="dots" x="0" y="0" width="32" height="32" patternUnits="userSpaceOnUse">
+              <circle cx="2" cy="2" r="1.5" fill="white" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#dots)" />
+        </svg>
 
-        <div className="relative grid gap-8 px-6 py-16 sm:grid-cols-2 sm:px-12 sm:py-24">
-          <div className="flex flex-col justify-center space-y-6">
-            
-            {/* Hot & Fresh + Contact Us details */}
+        {/* Glowing background blobs */}
+        <div className="absolute right-0 top-0 h-80 w-80 rounded-full bg-brand-600/15 blur-3xl" />
+        <div className="absolute left-0 bottom-0 h-64 w-64 rounded-full bg-gold-500/8 blur-3xl" />
+        <div className="absolute right-1/3 bottom-0 h-48 w-48 rounded-full bg-brand-600/8 blur-2xl" />
+
+        <div className="relative grid gap-6 px-6 py-10 sm:grid-cols-2 sm:px-12 sm:py-14">
+          {/* ---- LEFT: copy, CTAs, stats ---- */}
+          <div className="flex flex-col justify-center space-y-5">
             <div className="flex flex-wrap items-center gap-2">
               <span className="inline-flex items-center gap-1 rounded bg-brand-600 px-3 py-1 text-[9px] font-black uppercase tracking-widest text-white shadow">
-                🔥 HOT & FRESH
+                🔥 HOT &amp; FRESH
               </span>
-              <a
-                href={`tel:${restaurant?.contact?.phone || '111-666-111'}`}
-                className="inline-flex items-center gap-1 bg-stone-900 border border-stone-800 rounded px-3 py-1 text-[9px] font-black uppercase tracking-widest text-gold-400 hover:text-white transition"
-              >
-                📞 HELPLINE: {restaurant?.contact?.phone || '111-666-111'}
-              </a>
+              {restaurantLoading ? (
+                <div className="h-6 w-36 bg-stone-900 border border-stone-800 rounded animate-pulse" />
+              ) : (
+                <a
+                  href={`tel:${restaurant?.contact?.phone}`}
+                  className="inline-flex items-center gap-1 bg-stone-900 border border-stone-800 rounded px-3 py-1 text-[9px] font-black uppercase tracking-widest text-gold-400 hover:text-white transition"
+                >
+                  📞 HELPLINE: {restaurant?.contact?.phone}
+                </a>
+              )}
             </div>
-            
-            <h1 className="font-sans text-4xl font-black leading-none tracking-tight sm:text-6xl uppercase">
+
+            <h1 className="font-sans text-4xl font-black leading-none tracking-tight sm:text-5xl uppercase">
               CRISPY. GOLDEN.<br />
               <span className="text-gold-400">PERFECTION.</span>
             </h1>
 
-            <p className="max-w-md text-sm leading-relaxed text-stone-300">
-              {restaurant?.description ||
-                'Indulge in Karachi\'s finest golden-fried crispy chicken and mouth-watering signature burgers. Freshly seasoned and cooked to order.'}
-            </p>
+            {restaurantLoading ? (
+              <div className="space-y-2 max-w-md py-1">
+                <div className="h-3.5 w-full bg-stone-900 rounded animate-pulse" />
+                <div className="h-3.5 w-3/4 bg-stone-900 rounded animate-pulse" />
+              </div>
+            ) : (
+              <p className="max-w-md text-sm leading-relaxed text-stone-300">
+                {restaurant?.description}
+              </p>
+            )}
 
-            <div className="flex flex-wrap gap-4 pt-2">
+            <div className="flex flex-wrap gap-3 pt-1">
               <Link
                 to="/menu"
                 className="inline-flex items-center justify-center rounded-xl bg-brand-600 px-6 py-3 text-xs font-black tracking-widest text-white shadow-lg shadow-brand-600/25 transition-all hover:bg-brand-500 hover:-translate-y-0.5"
@@ -212,8 +236,8 @@ export default function HomePage() {
               </Link>
             </div>
 
-            {/* Quick trust metrics */}
-            <div className="grid grid-cols-3 gap-4 border-t border-stone-900 pt-6">
+            {/* Trust metrics */}
+            <div className="grid grid-cols-3 gap-3 border-t border-stone-900 pt-5">
               {[
                 { label: 'DELICIOUS FLAVORS', value: '100%' },
                 { label: 'HAPPY CUSTOMERS', value: '20,000+' },
@@ -225,36 +249,130 @@ export default function HomePage() {
                 </div>
               ))}
             </div>
+
+            {/* Trust badge strip */}
+            <div className="flex flex-wrap gap-3 pt-1">
+              {[
+                { icon: '🚀', text: 'Free Delivery over PKR 500' },
+                { icon: '💵', text: 'Cash on Delivery' },
+                { icon: '✅', text: '100% Halal' },
+              ].map((b) => (
+                <span
+                  key={b.text}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-stone-800 bg-stone-900/60 px-3 py-1 text-[9px] font-bold text-stone-300 tracking-wide"
+                >
+                  <span>{b.icon}</span>{b.text}
+                </span>
+              ))}
+            </div>
           </div>
 
-          {/* Hero visual food graphics with realistic custom SVG illustrations */}
-          <div className="hidden sm:flex sm:items-center sm:justify-center relative">
-            <div className="relative z-10 grid grid-cols-2 gap-4">
+          {/* ---- RIGHT: category cards + best sellers strip ---- */}
+          <div className="hidden sm:flex sm:flex-col sm:gap-4 sm:justify-center relative">
+
+            {/* 2×3 category card grid (6 cards – fully fills the column) */}
+            <div className="relative z-10 grid grid-cols-3 gap-3">
               {[
                 { component: <BurgerIcon />, bg: 'from-stone-900 to-stone-800', label: 'BURGERS' },
                 { component: <ChickenIcon />, bg: 'from-stone-900 to-stone-850', label: 'CRISPY PIECES' },
                 { component: <FriesIcon />, bg: 'from-stone-900 to-stone-850', label: 'SIDES' },
-                { component: <SodaIcon />, bg: 'from-stone-900 to-stone-800', label: 'DRINKS' }
+                { component: <SodaIcon />, bg: 'from-stone-900 to-stone-800', label: 'DRINKS' },
+                {
+                  component: (
+                    <svg className="w-16 h-16 hover:scale-110 transition-transform duration-300" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      {/* Wrapped Shawarma / wrap icon */}
+                      <ellipse cx="32" cy="38" rx="18" ry="14" fill="#D4A373" />
+                      <path d="M14 38 Q16 28 32 26 Q48 28 50 38" fill="#E6CCB2" />
+                      <path d="M20 36 Q26 30 32 30 Q38 30 44 36" fill="#C1A07A" />
+                      <rect x="20" y="34" width="5" height="3" rx="1.5" fill="#E76F51" />
+                      <rect x="28" y="32" width="8" height="3" rx="1.5" fill="#2A9D8F" />
+                      <rect x="38" y="34" width="5" height="3" rx="1.5" fill="#E76F51" />
+                      <path d="M14 38 Q16 50 32 52 Q48 50 50 38" fill="#C8A26B" />
+                    </svg>
+                  ),
+                  bg: 'from-stone-900 to-stone-850',
+                  label: 'WRAPS',
+                },
+                {
+                  component: (
+                    <svg className="w-16 h-16 hover:scale-110 transition-transform duration-300" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      {/* Dessert / Ice cream */}
+                      <rect x="25" y="34" width="14" height="20" rx="2" fill="#F4D03F" />
+                      <path d="M20 24 Q20 14 32 14 Q44 14 44 24 Q44 32 38 34 H26 Q20 32 20 24Z" fill="#FADADD" />
+                      <path d="M25 20 Q28 16 32 16 Q36 16 39 20" stroke="#E8A0B4" strokeWidth="1.5" strokeLinecap="round" />
+                      <circle cx="28" cy="24" r="2" fill="#E76F51" />
+                      <circle cx="36" cy="22" r="2" fill="#E76F51" />
+                    </svg>
+                  ),
+                  bg: 'from-stone-900 to-stone-800',
+                  label: 'DESSERTS',
+                },
               ].map((item, i) => (
                 <div
                   key={i}
-                  className={`flex flex-col items-center justify-center rounded-2xl bg-gradient-to-br ${item.bg} p-6 border border-stone-800 shadow-xl transition-all duration-300 hover:scale-105 hover:border-gold-500/40`}
-                  style={{ animation: 'float 3s ease-in-out infinite', animationDelay: `${i * 0.2}s` }}
+                  className={`flex flex-col items-center justify-center rounded-2xl bg-gradient-to-br ${item.bg} p-4 border border-stone-800 shadow-xl transition-all duration-300 hover:scale-105 hover:border-gold-500/40 cursor-pointer`}
+                  style={{ animation: 'float 3s ease-in-out infinite', animationDelay: `${i * 0.15}s` }}
                 >
                   {item.component}
-                  <div className="text-[10px] font-black text-stone-400 tracking-widest mt-3 uppercase">{item.label}</div>
+                  <div className="text-[9px] font-black text-stone-400 tracking-widest mt-2 uppercase text-center leading-tight">
+                    {item.label}
+                  </div>
                 </div>
               ))}
             </div>
+
+            {/* Popular Items horizontal micro-strip */}
+            <div className="relative z-10 rounded-2xl border border-stone-800 bg-stone-900/80 p-3">
+              <div className="mb-2 flex items-center justify-between">
+                <span className="text-[9px] font-black uppercase tracking-widest text-gold-400">
+                  ⭐ BEST SELLERS
+                </span>
+                <Link to="/menu" className="text-[9px] font-bold text-stone-400 hover:text-white transition tracking-wider">
+                  VIEW ALL →
+                </Link>
+              </div>
+              <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-none">
+                {(featured.slice(0, 5).length > 0 ? featured.slice(0, 5) : [
+                  { _id: 'p1', name: 'Crispy Burger', price: 350, emoji: '🍔' },
+                  { _id: 'p2', name: 'Chicken Box', price: 450, emoji: '🍗' },
+                  { _id: 'p3', name: 'Mega Fries', price: 200, emoji: '🍟' },
+                  { _id: 'p4', name: 'Loaded Wrap', price: 380, emoji: '🌯' },
+                  { _id: 'p5', name: 'Choco Cone', price: 180, emoji: '🍦' },
+                ]).map((item) => (
+                  <div
+                    key={item._id}
+                    className="flex flex-col items-center shrink-0 rounded-xl bg-stone-800/60 border border-stone-700/50 p-2 w-20 hover:border-gold-500/50 hover:bg-stone-800 transition-all cursor-pointer"
+                  >
+                    {item.image ? (
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="h-10 w-10 rounded-lg object-cover mb-1"
+                      />
+                    ) : (
+                      <span className="text-2xl mb-1">{item.emoji || '🍽️'}</span>
+                    )}
+                    <span className="text-[8px] font-bold text-stone-300 text-center leading-tight line-clamp-2">
+                      {item.name}
+                    </span>
+                    <span className="text-[8px] font-black text-gold-400 mt-0.5">
+                      {item.price ? `PKR ${item.price}` : ''}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             {/* Ambient golden halo */}
             <div className="absolute inset-0 -z-10 bg-gold-500/5 blur-3xl rounded-full" />
           </div>
         </div>
       </section>
 
+
       {/* ---- DEALS SLIDER CAROUSEL ---- */}
       {dealsLoading ? (
-        <section className="flex justify-center py-8"><Spinner /></section>
+        <SkeletonDealCard />
       ) : deals && deals.length > 0 ? (
         <section className="space-y-6">
           <div className="flex items-end justify-between gap-4">
@@ -334,7 +452,7 @@ export default function HomePage() {
                       {deal.description && (
                         <p className="text-sm text-stone-600 leading-relaxed max-w-md">{deal.description}</p>
                       )}
-                      
+
                       {/* Price Section */}
                       <div className="flex items-center gap-4 pt-2">
                         <span className="text-3xl font-black text-brand-600">
@@ -371,9 +489,8 @@ export default function HomePage() {
                     key={idx}
                     type="button"
                     onClick={() => { stopAutoplay(); setCurrentSlide(idx); startAutoplay(); }}
-                    className={`h-2.5 rounded-full transition-all duration-300 ${
-                      currentSlide === idx ? 'w-6 bg-brand-600' : 'w-2.5 bg-stone-300 hover:bg-stone-400'
-                    }`}
+                    className={`h-2.5 rounded-full transition-all duration-300 ${currentSlide === idx ? 'w-6 bg-brand-600' : 'w-2.5 bg-stone-300 hover:bg-stone-400'
+                      }`}
                     aria-label={`Go to slide ${idx + 1}`}
                   />
                 ))}
@@ -385,7 +502,13 @@ export default function HomePage() {
 
       {/* ---- TRENDING ---- */}
       {trendingLoading ? (
-        <section className="flex justify-center py-8"><Spinner /></section>
+        <section className="space-y-6">
+          <div>
+            <div className="h-4 w-28 rounded-full bg-stone-200 animate-pulse mb-2" />
+            <div className="h-8 w-48 rounded bg-stone-200 animate-pulse" />
+          </div>
+          <SkeletonItemCard count={3} />
+        </section>
       ) : trending && trending.length > 0 ? (
         <section>
           <div className="mb-6">
@@ -405,7 +528,13 @@ export default function HomePage() {
 
       {/* ---- RUNNING ---- */}
       {runningLoading ? (
-        <section className="flex justify-center py-8"><Spinner /></section>
+        <section className="space-y-6">
+          <div>
+            <div className="h-4 w-28 rounded-full bg-stone-200 animate-pulse mb-2" />
+            <div className="h-8 w-48 rounded bg-stone-200 animate-pulse" />
+          </div>
+          <SkeletonItemCard count={3} />
+        </section>
       ) : running && running.length > 0 ? (
         <section>
           <div className="mb-6">
@@ -439,7 +568,7 @@ export default function HomePage() {
         </div>
 
         {loading ? (
-          <div className="flex justify-center py-12"><Spinner /></div>
+          <SkeletonMenuItemCard count={4} />
         ) : featured.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-stone-200 bg-stone-50 py-16 text-center">
             <div className="text-4xl mb-3">🍽️</div>

@@ -6,16 +6,16 @@ import ChatWidget from '../chatbot/ChatWidget.jsx';
 import OrderStatusNotification from '../ui/OrderStatusNotification.jsx';
 
 export default function Layout() {
-  return (
-    <div className="flex min-h-full flex-col">
-      <Header />
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6">
-        <Outlet />
-      </main>
-      <Footer />
-      <CartDrawer />
-      <ChatWidget />
-      <OrderStatusNotification />
-    </div>
-  );
+    return (
+        <div className="flex min-h-full flex-col">
+            <Header />
+            <main className="mx-auto w-full max-w-[1380px] flex-1 px-4 sm:px-6 py-6">
+                <Outlet />
+            </main>
+            <Footer />
+            <CartDrawer />
+            <ChatWidget />
+            <OrderStatusNotification />
+        </div>
+    );
 }

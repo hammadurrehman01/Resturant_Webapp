@@ -1,6 +1,6 @@
 import useRestaurant from '../hooks/useRestaurant.js';
 import { useUI } from '../store/ui.js';
-import Spinner from '../components/ui/Spinner.jsx';
+import { SkeletonContactPage } from '../components/ui/Skeleton.jsx';
 
 const CONTACT_ITEMS = (restaurant, toggleChat) => [
   restaurant?.contact?.phone && {
@@ -50,12 +50,12 @@ export default function ContactPage() {
   const { restaurant, loading } = useRestaurant();
   const toggleChat = useUI((s) => s.toggleChat);
 
-  if (loading) return <div className="flex justify-center py-20"><Spinner /></div>;
+  if (loading) return <SkeletonContactPage />;
 
   const items = CONTACT_ITEMS(restaurant, toggleChat);
 
   return (
-    <div className="space-y-10">
+    <div className="mx-auto max-w-7xl px-4 sm:px-8 py-8 space-y-10">
 
       {/* ---- Hero ---- */}
       <div className="relative overflow-hidden rounded-3xl hero-gradient px-8 py-14 text-white sm:px-14">

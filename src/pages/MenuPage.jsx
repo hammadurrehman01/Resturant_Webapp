@@ -4,7 +4,7 @@ import useRestaurant from '../hooks/useRestaurant.js';
 import useTrending from '../hooks/useTrending.js';
 import MenuItemCard from '../components/menu/MenuItemCard.jsx';
 import FeaturedItemCard from '../components/home/FeaturedItemCard.jsx';
-import Spinner from '../components/ui/Spinner.jsx';
+import { SkeletonMenuItemCard } from '../components/ui/Skeleton.jsx';
 
 const CATEGORY_EMOJIS = {
   Biryani: '🍛',
@@ -54,7 +54,7 @@ export default function MenuPage() {
   }, [menu, query, activeCategory]);
 
   return (
-    <div className="space-y-10">
+    <div className="mx-auto max-w-7xl px-4 sm:px-8 py-8 space-y-10">
 
       {/* ---- Page header ---- */}
       <div className="rounded-2xl bg-stone-950 border border-stone-900 px-8 py-12 text-white relative overflow-hidden">
@@ -131,7 +131,7 @@ export default function MenuPage() {
       </div>
 
       {/* ---- States ---- */}
-      {loading && <div className="flex justify-center py-16"><Spinner /></div>}
+      {loading && <SkeletonMenuItemCard count={8} />}
       {error && (
         <div className="rounded-2xl border border-red-200 bg-red-50 p-5 text-sm text-red-700 font-bold">
           COULDN'T LOAD MENU: {error.message}
@@ -178,11 +178,10 @@ function CategoryPill({ active, onClick, children, emoji }) {
     <button
       type="button"
       onClick={onClick}
-      className={`inline-flex items-center gap-1.5 rounded-lg px-4 py-2.5 text-[10px] font-black tracking-widest transition-all duration-200 ${
-        active
+      className={`inline-flex items-center gap-1.5 rounded-lg px-4 py-2.5 text-[10px] font-black tracking-widest transition-all duration-200 ${active
           ? 'bg-brand-600 text-white shadow-md shadow-brand-500/20'
           : 'border border-stone-200 bg-white text-stone-600 hover:border-brand-300 hover:bg-brand-50 hover:text-brand-600'
-      }`}
+        }`}
     >
       <span>{emoji}</span>
       {children}

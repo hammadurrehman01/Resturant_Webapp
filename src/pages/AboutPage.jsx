@@ -1,5 +1,5 @@
 import useRestaurant from '../hooks/useRestaurant.js';
-import Spinner from '../components/ui/Spinner.jsx';
+import { SkeletonAboutPage } from '../components/ui/Skeleton.jsx';
 
 const DAY_LABELS = {
   mon: 'Monday', tue: 'Tuesday', wed: 'Wednesday', thu: 'Thursday',
@@ -13,7 +13,7 @@ const TODAY_KEY = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'][new Date().g
 export default function AboutPage() {
   const { restaurant, loading } = useRestaurant();
 
-  if (loading) return <div className="flex justify-center py-20"><Spinner /></div>;
+  if (loading) return <SkeletonAboutPage />;
   if (!restaurant) return <div className="text-stone-500 py-10 text-center">Restaurant info unavailable.</div>;
 
   const hours = (restaurant.openingHours || [])
@@ -23,7 +23,7 @@ export default function AboutPage() {
   const todayHours = hours.find((h) => h.day === TODAY_KEY);
 
   return (
-    <div className="space-y-12">
+    <div className="mx-auto max-w-7xl px-4 sm:px-8 py-8 space-y-12">
 
       {/* ---- Hero ---- */}
       <div className="relative overflow-hidden rounded-3xl hero-gradient px-8 py-14 text-white sm:px-14">
@@ -82,9 +82,8 @@ export default function AboutPage() {
                 return (
                   <div
                     key={h.day}
-                    className={`flex items-center justify-between rounded-lg px-3 py-2 text-sm ${
-                      isToday ? 'bg-brand-50 border border-brand-100' : ''
-                    }`}
+                    className={`flex items-center justify-between rounded-lg px-3 py-2 text-sm ${isToday ? 'bg-brand-50 border border-brand-100' : ''
+                      }`}
                   >
                     <dt className={`font-medium ${isToday ? 'text-brand-800' : 'text-stone-600'}`}>
                       {DAY_LABELS[h.day]}

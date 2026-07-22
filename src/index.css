@@ -152,3 +152,10 @@ body {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { @apply bg-stone-300 rounded-full; }
 ::-webkit-scrollbar-thumb:hover { @apply bg-stone-400; }
+
+/* ---- Hide scrollbar (Best Sellers strip) ---- */
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-none::-webkit-scrollbar { display: none; }
