@@ -321,6 +321,7 @@ export default function HomePage() {
               ))}
             </div>
 <p></p>
+<p></p>
             {/* Popular Items horizontal micro-strip */}
             <div className="relative z-10 rounded-2xl border border-stone-800 bg-stone-900/80 p-3">
               <div className="mb-2 flex items-center justify-between">
