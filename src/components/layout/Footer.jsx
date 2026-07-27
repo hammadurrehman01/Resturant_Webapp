@@ -24,7 +24,7 @@ export default function Footer() {
                         </div>
                         <div>
                             <div className="text-base font-bold text-white">{restaurant?.name || 'Restaurant'}</div>
-                            <div className="text-[10px] text-stone-500 uppercase tracking-wider">Fine Dining & Delivery</div>
+                            <div className="text-[10px] text-stone-500 uppercase tracking-wider">{restaurant?.slogan || 'Fine Dining & Delivery'}</div>
                         </div>
                     </div>
                     {restaurant?.description && (

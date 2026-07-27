@@ -42,9 +42,11 @@ export default function Header() {
                                 <div className="text-base font-extrabold tracking-wider text-white leading-tight uppercase font-sans">
                                     {restaurant?.name}
                                 </div>
-                                <div className="text-[10px] font-bold text-gold-400 uppercase tracking-widest leading-none">
-                                    Fried Chicken & More
-                                </div>
+                                {restaurant?.slogan && (
+                                    <div className="text-[10px] font-bold text-gold-400 uppercase tracking-widest leading-none">
+                                        {restaurant.slogan}
+                                    </div>
+                                )}
                             </>
                         )}
                     </div>

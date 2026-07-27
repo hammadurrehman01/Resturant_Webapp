@@ -320,8 +320,6 @@ export default function HomePage() {
                 </div>
               ))}
             </div>
-<p></p>
-<p></p>
             {/* Popular Items horizontal micro-strip */}
             <div className="relative z-10 rounded-2xl border border-stone-800 bg-stone-900/80 p-3">
               <div className="mb-2 flex items-center justify-between">
@@ -601,9 +599,9 @@ export default function HomePage() {
       <section className="overflow-hidden rounded-3xl bg-stone-950 p-8 sm:p-12 text-white border border-stone-900">
         <div className="mb-10 text-center">
           <div className="inline-flex items-center gap-1 rounded-full border border-stone-800 bg-stone-900 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-stone-400">
-            WHY KABABJEES
+            WHY {(restaurant?.name || 'US').toUpperCase()}
           </div>
-          <h2 className="font-sans text-3xl font-extrabold text-white mt-3 uppercase tracking-tight">THE KABABJEES PROMISE</h2>
+          <h2 className="font-sans text-3xl font-extrabold text-white mt-3 uppercase tracking-tight">THE {(restaurant?.name || 'RESTAURANT').toUpperCase()} PROMISE</h2>
         </div>
         <div className="grid gap-6 sm:grid-cols-3">
           {FEATURES.map((f, i) => (
