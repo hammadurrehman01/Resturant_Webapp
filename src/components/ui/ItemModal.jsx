@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useCart } from '../../store/cart.js';
 import { formatMoney } from '../../lib/format.js';
+import { cldImg } from '../../lib/image.js';
 
 /**
  * ItemModal — shown when a customer clicks any food item (menu item, trending, running, or deal).
@@ -120,7 +121,7 @@ export default function ItemModal({ item, type = 'menuItem', currency = 'PKR', o
         {/* Hero image */}
         {image ? (
           <div className="relative h-56 sm:h-64 w-full overflow-hidden">
-            <img src={image} alt={name} className="h-full w-full object-cover" />
+            <img src={cldImg(image, 700)} alt={name} className="h-full w-full object-cover" decoding="async" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
 
             {/* Discount badge over image */}

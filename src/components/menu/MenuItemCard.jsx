@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useCart } from '../../store/cart.js';
 import { formatMoney } from '../../lib/format.js';
+import { cldImg } from '../../lib/image.js';
 import ItemModal from '../ui/ItemModal.jsx';
 
 export default function MenuItemCard({ item, currency = 'PKR' }) {
@@ -29,10 +30,11 @@ export default function MenuItemCard({ item, currency = 'PKR' }) {
         {item.image ? (
           <div className="relative overflow-hidden h-44">
             <img
-              src={item.image}
+              src={cldImg(item.image, 400)}
               alt={item.name}
               className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
               loading="lazy"
+              decoding="async"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-stone-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             {/* Quick-view hint on hover */}

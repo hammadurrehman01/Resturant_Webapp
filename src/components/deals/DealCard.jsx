@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { formatMoney } from '../../lib/format.js';
+import { cldImg } from '../../lib/image.js';
 import ItemModal from '../ui/ItemModal.jsx';
 
 export default function DealCard({ deal, currency = 'PKR' }) {
@@ -42,10 +43,11 @@ export default function DealCard({ deal, currency = 'PKR' }) {
         {deal.image ? (
           <div className="relative overflow-hidden h-40">
             <img
-              src={deal.image}
+              src={cldImg(deal.image, 400)}
               alt={deal.title}
               className="h-full w-full object-cover transition group-hover:scale-[1.03]"
               loading="lazy"
+              decoding="async"
             />
             {/* Hover overlay */}
             <div className="absolute inset-0 bg-stone-900/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
