@@ -28,9 +28,6 @@ export default function CartDrawer() {
   }, [open, close]);
 
   const currency = restaurant?.currency || 'PKR';
-  const deliveryFee = restaurant?.deliveryFee || 0;
-  const taxAmount = ((restaurant?.taxPercent || 0) * subtotal) / 100;
-  const total = subtotal + deliveryFee + taxAmount;
 
   return (
     <>
@@ -103,16 +100,10 @@ export default function CartDrawer() {
         {items.length > 0 && (
           <div className="border-t border-stone-200 px-4 py-3">
             <dl className="space-y-1 text-sm">
-              <div className="flex justify-between"><dt className="text-stone-600">Subtotal</dt><dd>{formatMoney(subtotal, currency)}</dd></div>
-              {deliveryFee > 0 && (
-                <div className="flex justify-between"><dt className="text-stone-600">Delivery</dt><dd>{formatMoney(deliveryFee, currency)}</dd></div>
-              )}
-              {taxAmount > 0 && (
-                <div className="flex justify-between"><dt className="text-stone-600">Tax</dt><dd>{formatMoney(taxAmount, currency)}</dd></div>
-              )}
               <div className="mt-1 flex justify-between border-t border-stone-200 pt-2 text-base font-semibold">
-                <dt>Total</dt><dd>{formatMoney(total, currency)}</dd>
+                <dt>Subtotal</dt><dd>{formatMoney(subtotal, currency)}</dd>
               </div>
+              <p className="text-xs text-stone-500">Choose delivery or pickup at checkout. Delivery fee (if any) is added there.</p>
             </dl>
             <button
               type="button"

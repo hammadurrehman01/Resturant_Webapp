@@ -5,13 +5,22 @@ import { formatMoney, humanStatus, statusBadgeClass } from '../lib/format.js';
 import Spinner from '../components/ui/Spinner.jsx';
 import useRestaurant from '../hooks/useRestaurant.js';
 
-const TIMELINE = [
+const DELIVERY_TIMELINE = [
   { key: 'pending',          label: 'Pending',        emoji: '⏳', desc: 'Order placed, waiting for confirmation' },
   { key: 'confirmed',        label: 'Confirmed',      emoji: '✅', desc: 'Order confirmed by the kitchen' },
   { key: 'preparing',        label: 'Preparing',      emoji: '👨‍🍳', desc: 'Your food is being prepared' },
-  { key: 'ready',            label: 'Ready',          emoji: '🍽️', desc: 'Order is ready for pickup/delivery' },
+  { key: 'ready',            label: 'Ready',          emoji: '🍽️', desc: 'Order is ready for delivery' },
   { key: 'out_for_delivery', label: 'On the Way',     emoji: '🛵', desc: 'Your order is out for delivery' },
   { key: 'delivered',        label: 'Delivered',      emoji: '🎉', desc: 'Enjoy your meal!' },
+];
+
+// Pickup ("receive") orders skip the delivery leg entirely.
+const PICKUP_TIMELINE = [
+  { key: 'pending',   label: 'Pending',    emoji: '⏳', desc: 'Order placed, waiting for confirmation' },
+  { key: 'confirmed', label: 'Confirmed',  emoji: '✅', desc: 'Order confirmed by the kitchen' },
+  { key: 'preparing', label: 'Preparing',  emoji: '👨‍🍳', desc: 'Your food is being prepared' },
+  { key: 'ready',     label: 'Ready',      emoji: '🍽️', desc: 'Ready for pickup at the restaurant' },
+  { key: 'delivered', label: 'Picked Up',  emoji: '🎉', desc: 'Order collected — enjoy your meal!' },
 ];
 
 import useSocket from '../hooks/useSocket.js';
@@ -82,6 +91,7 @@ export default function TrackOrderPage() {
   };
 
   const currency = restaurant?.currency || 'PKR';
+  const TIMELINE = order?.orderType === 'pickup' ? PICKUP_TIMELINE : DELIVERY_TIMELINE;
   const currentStep = order?.status === 'cancelled' ? -1 : TIMELINE.findIndex((s) => s.key === order?.status);
 
   return (
@@ -172,7 +182,9 @@ export default function TrackOrderPage() {
           {/* Timeline */}
           {order.status !== 'cancelled' && (
             <div className="card">
-              <h2 className="text-sm font-bold text-stone-900 mb-6">Delivery Progress</h2>
+              <h2 className="text-sm font-bold text-stone-900 mb-6">
+                {order.orderType === 'pickup' ? 'Pickup Progress' : 'Delivery Progress'}
+              </h2>
               <div className="relative">
                 {/* Connecting line */}
                 <div className="absolute left-5 top-0 bottom-0 w-0.5 bg-stone-100" />

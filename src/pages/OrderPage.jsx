@@ -25,6 +25,7 @@ export default function OrderPage() {
     phone: '',
     address: '',
     notes: '',
+    orderType: 'delivery',
     paymentMethod: 'cod',
   });
   const [submitting, setSubmitting] = useState(false);
@@ -32,9 +33,10 @@ export default function OrderPage() {
   const [placed, setPlaced] = useState(null);
 
   const currency = restaurant?.currency || 'PKR';
-  const deliveryFee = restaurant?.deliveryFee || 0;
-  const taxAmount = ((restaurant?.taxPercent || 0) * subtotal) / 100;
-  const total = subtotal + deliveryFee + taxAmount;
+  const isPickup = form.orderType === 'pickup';
+  // Pickup ("receive") orders pay no delivery fee. Tax is included in prices.
+  const deliveryFee = isPickup ? 0 : (restaurant?.deliveryFee || 0);
+  const total = subtotal + deliveryFee;
 
   const update = (field) => (e) => setForm((f) => ({ ...f, [field]: e.target.value }));
 
@@ -51,9 +53,10 @@ export default function OrderPage() {
         customer: {
           name: form.name.trim(),
           phone: form.phone.trim(),
-          address: form.address.trim(),
+          address: isPickup ? undefined : form.address.trim(),
           notes: form.notes.trim() || undefined,
         },
+        orderType: form.orderType,
         items: items.map((i) => ({ menuItemId: i.menuItemId, quantity: i.quantity })),
         paymentMethod: form.paymentMethod,
         source: 'web',
@@ -127,16 +130,38 @@ export default function OrderPage() {
         <h1 className="text-2xl font-bold">Checkout</h1>
 
         <fieldset className="card space-y-4">
-          <legend className="text-base font-semibold">Delivery details</legend>
+          <legend className="text-base font-semibold">How would you like your order?</legend>
+          <div className="grid grid-cols-2 gap-3">
+            <OrderTypeCard
+              active={!isPickup}
+              onClick={() => setForm((f) => ({ ...f, orderType: 'delivery' }))}
+              emoji="🛵"
+              title="Delivery"
+              subtitle={deliveryFee > 0 ? `+ ${formatMoney(restaurant?.deliveryFee || 0, currency)} fee` : 'To your address'}
+            />
+            <OrderTypeCard
+              active={isPickup}
+              onClick={() => setForm((f) => ({ ...f, orderType: 'pickup' }))}
+              emoji="🏪"
+              title="Pickup"
+              subtitle="No delivery fee"
+            />
+          </div>
+        </fieldset>
+
+        <fieldset className="card space-y-4">
+          <legend className="text-base font-semibold">Your details</legend>
           <Field label="Full name" required>
             <input type="text" required value={form.name} onChange={update('name')} className="input" minLength={2} maxLength={120} />
           </Field>
           <Field label="Phone" required>
             <input type="tel" required value={form.phone} onChange={update('phone')} className="input" minLength={5} maxLength={30} placeholder="+92 300 1234567" />
           </Field>
-          <Field label="Address" required>
-            <textarea required rows={3} value={form.address} onChange={update('address')} className="input" minLength={3} maxLength={500} />
-          </Field>
+          {!isPickup && (
+            <Field label="Delivery address" required>
+              <textarea required rows={3} value={form.address} onChange={update('address')} className="input" minLength={3} maxLength={500} />
+            </Field>
+          )}
           <Field label="Order notes">
             <textarea rows={2} value={form.notes} onChange={update('notes')} className="input" maxLength={500} placeholder="e.g. spicy, no onions" />
           </Field>
@@ -196,13 +221,29 @@ export default function OrderPage() {
           </ul>
           <dl className="mt-3 space-y-1 border-t border-stone-200 pt-3 text-sm">
             <Row label="Subtotal" value={formatMoney(subtotal, currency)} />
-            {deliveryFee > 0 && <Row label="Delivery" value={formatMoney(deliveryFee, currency)} />}
-            {taxAmount > 0 && <Row label={`Tax (${restaurant.taxPercent}%)`} value={formatMoney(taxAmount, currency)} />}
+            <Row label={isPickup ? 'Pickup' : 'Delivery'} value={isPickup ? 'Free' : formatMoney(deliveryFee, currency)} />
             <Row label="Total" value={formatMoney(total, currency)} bold />
           </dl>
         </div>
       </aside>
     </div>
+  );
+}
+
+function OrderTypeCard({ active, onClick, emoji, title, subtitle }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`flex flex-col items-center gap-1 rounded-xl border-2 p-4 text-center transition ${
+        active ? 'border-brand-500 bg-brand-50' : 'border-stone-200 bg-white hover:border-stone-300'
+      }`}
+      aria-pressed={active}
+    >
+      <span className="text-2xl">{emoji}</span>
+      <span className={`text-sm font-bold ${active ? 'text-brand-700' : 'text-stone-800'}`}>{title}</span>
+      <span className="text-xs text-stone-500">{subtitle}</span>
+    </button>
   );
 }
 
