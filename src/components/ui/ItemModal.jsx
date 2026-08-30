@@ -70,12 +70,12 @@ export default function ItemModal({ item, type = 'menuItem', currency = 'PKR', o
 
   const canAddToCart =
     type === 'menuItem' ||
-    type === 'deal' ||
+    (type === 'deal' && !!item.menuItemId) ||
     !!linkedMenuItem;
 
   const cartItem =
     type === 'menuItem' ? item :
-    type === 'deal' ? { ...item, name: item.title } :
+    type === 'deal' ? (item.menuItemId ? { menuItemId: item.menuItemId, name: item.title, price: item.price, image: item.image } : null) :
     linkedMenuItem || null;
 
   const handleAddToCart = () => {
