@@ -19,8 +19,12 @@ export default function Footer() {
                 {/* Brand */}
                 <div>
                     <div className="flex items-center gap-3 mb-4">
-                        <div className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 font-bold text-white text-lg shadow-lg shadow-brand-700/40">
-                            {(restaurant?.name?.[0] || 'R').toUpperCase()}
+                        <div className="grid h-10 w-10 place-items-center overflow-hidden rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 font-bold text-white text-lg shadow-lg shadow-brand-700/40">
+                            {restaurant?.logo ? (
+                                <img src={restaurant.logo} alt={restaurant?.name || 'Logo'} className="h-full w-full object-cover" />
+                            ) : (
+                                (restaurant?.name?.[0] || 'R').toUpperCase()
+                            )}
                         </div>
                         <div>
                             <div className="text-base font-bold text-white">{restaurant?.name || 'Restaurant'}</div>

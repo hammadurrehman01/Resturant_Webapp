@@ -23,9 +23,11 @@ export default function Header() {
             <div className="mx-auto flex max-w-[1380px] items-center gap-4 px-4 sm:px-6 py-3.5">
                 {/* Logo */}
                 <Link to="/" className="flex items-center gap-3 group">
-                    <div className="relative grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-600 font-bold text-white text-lg shadow-md shadow-brand-500/20 transition-transform duration-200 group-hover:scale-105">
+                    <div className="relative grid h-10 w-10 place-items-center overflow-hidden rounded-xl bg-gradient-to-br from-brand-500 to-brand-600 font-bold text-white text-lg shadow-md shadow-brand-500/20 transition-transform duration-200 group-hover:scale-105">
                         {loading ? (
                             <div className="h-5 w-5 bg-stone-800/80 rounded animate-pulse" />
+                        ) : restaurant?.logo ? (
+                            <img src={restaurant.logo} alt={restaurant?.name || 'Logo'} className="h-full w-full object-cover" />
                         ) : (
                             (restaurant?.name?.[0] || '').toUpperCase()
                         )}
@@ -78,7 +80,7 @@ export default function Header() {
                     className="relative ml-2 inline-flex items-center gap-2 rounded-xl bg-brand-600 px-4 py-2.5 text-xs font-black tracking-widest text-white shadow-md shadow-brand-500/20 transition-all duration-200 hover:bg-brand-500 hover:scale-105"
                     aria-label="Open cart"
                 >
-                    <svg className="h-4.5 w-4.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <svg className="h-5 w-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M3 4h2l2.4 12.4A2 2 0 0 0 9.4 18h8.5a2 2 0 0 0 2-1.6L21 8H6" />
                         <circle cx="9" cy="21" r="1.5" />
                         <circle cx="18" cy="21" r="1.5" />
