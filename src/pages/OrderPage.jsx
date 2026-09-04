@@ -76,6 +76,27 @@ export default function OrderPage() {
         console.error('Error saving placed order to tracker:', err);
       }
 
+      // Save a richer record (incl. phone) so the customer can find and track
+      // this order later from the Track page without remembering the number.
+      try {
+        const key = 'rss_order_history';
+        const raw = localStorage.getItem(key);
+        const history = raw ? JSON.parse(raw) : [];
+        if (!history.some((h) => h.orderNumber === order.orderNumber)) {
+          history.unshift({
+            orderNumber: order.orderNumber,
+            phone: form.phone.trim(),
+            name: form.name.trim(),
+            total: order.totals?.total,
+            currency,
+            placedAt: order.createdAt || new Date().toISOString(),
+          });
+          localStorage.setItem(key, JSON.stringify(history.slice(0, 10)));
+        }
+      } catch (err) {
+        console.error('Error saving order history:', err);
+      }
+
       clear();
     } catch (err) {
       setError(err.message || 'Failed to place order');

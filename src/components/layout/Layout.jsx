@@ -1,4 +1,5 @@
 import { Outlet } from 'react-router-dom';
+import ScrollToTop from './ScrollToTop.jsx';
 import Header from './Header.jsx';
 import Footer from './Footer.jsx';
 import CartDrawer from '../cart/CartDrawer.jsx';
@@ -8,6 +9,7 @@ import OrderStatusNotification from '../ui/OrderStatusNotification.jsx';
 export default function Layout() {
     return (
         <div className="flex min-h-full flex-col">
+            <ScrollToTop />
             <Header />
             <main className="mx-auto w-full max-w-[1380px] flex-1 px-4 sm:px-6 py-6">
                 <Outlet />

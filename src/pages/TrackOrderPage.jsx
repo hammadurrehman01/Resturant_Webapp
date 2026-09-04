@@ -36,6 +36,25 @@ export default function TrackOrderPage() {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [history, setHistory] = useState([]);
+
+  // Load the customer's recently placed orders (saved at checkout) so they can
+  // track one with a single tap even if they didn't note the order number.
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('rss_order_history');
+      setHistory(raw ? JSON.parse(raw) : []);
+    } catch {
+      setHistory([]);
+    }
+  }, []);
+
+  const trackFromHistory = (h) => {
+    setOrderNumber(h.orderNumber);
+    setPhone(h.phone || '');
+    setError(null);
+    lookup(h.orderNumber, h.phone || '');
+  };
 
   const { joinOrderRoom, orderUpdate } = useSocket();
 

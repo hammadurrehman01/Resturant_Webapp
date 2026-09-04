@@ -10,6 +10,15 @@ const DAY_SHORT = { mon: 'Mon', tue: 'Tue', wed: 'Wed', thu: 'Thu', fri: 'Fri', 
 
 const TODAY_KEY = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'][new Date().getDay()];
 
+// Converts a 24-hour "HH:MM" string to a 12-hour "h:MM AM/PM" label.
+function to12h(t) {
+  if (!t || !/^\d{1,2}:\d{2}$/.test(t)) return t || '';
+  const [h, m] = t.split(':').map(Number);
+  const period = h < 12 ? 'AM' : 'PM';
+  const hour = h % 12 === 0 ? 12 : h % 12;
+  return `${hour}:${String(m).padStart(2, '0')} ${period}`;
+}
+
 export default function AboutPage() {
   const { restaurant, loading } = useRestaurant();
 
@@ -21,6 +30,21 @@ export default function AboutPage() {
     .sort((a, b) => DAY_ORDER.indexOf(a.day) - DAY_ORDER.indexOf(b.day));
 
   const todayHours = hours.find((h) => h.day === TODAY_KEY);
+
+  // Prefer the exact pin the admin dropped on the map; fall back to a text
+  // address search so the button still works before a pin is set.
+  const hasLocation =
+    restaurant.location &&
+    typeof restaurant.location.lat === 'number' &&
+    typeof restaurant.location.lng === 'number';
+  const addressQuery = restaurant.address
+    ? [restaurant.address.line1, restaurant.address.city, restaurant.address.country].filter(Boolean).join(', ')
+    : '';
+  const mapHref = hasLocation
+    ? `https://www.google.com/maps/search/?api=1&query=${restaurant.location.lat},${restaurant.location.lng}`
+    : addressQuery
+      ? `https://maps.google.com/?q=${encodeURIComponent(addressQuery)}`
+      : '';
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-8 py-8 space-y-12">
@@ -43,7 +67,7 @@ export default function AboutPage() {
               <span className="h-2 w-2 rounded-full bg-green-400 animate-pulse" />
               {todayHours.closed
                 ? 'Closed today'
-                : `Open today: ${todayHours.open} – ${todayHours.close}`}
+                : `Open today: ${to12h(todayHours.open)} – ${to12h(todayHours.close)}`}
             </div>
           )}
         </div>
@@ -90,7 +114,7 @@ export default function AboutPage() {
                       {isToday && <span className="ml-2 text-[10px] font-bold uppercase tracking-wider text-brand-600">Today</span>}
                     </dt>
                     <dd className={h.closed ? 'text-stone-400 italic text-xs' : isToday ? 'font-semibold text-brand-700' : 'text-stone-800 text-xs'}>
-                      {h.closed ? 'Closed' : `${h.open} – ${h.close}`}
+                      {h.closed ? 'Closed' : `${to12h(h.open)} – ${to12h(h.close)}`}
                     </dd>
                   </div>
                 );
@@ -105,22 +129,26 @@ export default function AboutPage() {
             <span className="text-xl">📍</span>
             <h2 className="text-base font-bold text-stone-900">Visit Us</h2>
           </div>
-          {restaurant.address ? (
+          {(restaurant.address || hasLocation) ? (
             <>
-              <address className="not-italic text-sm leading-relaxed text-stone-600 space-y-1">
-                {restaurant.address.line1 && <div className="font-medium text-stone-800">{restaurant.address.line1}</div>}
-                {restaurant.address.line2 && <div>{restaurant.address.line2}</div>}
-                <div>{[restaurant.address.city, restaurant.address.postalCode].filter(Boolean).join(' ')}</div>
-                <div>{restaurant.address.country}</div>
-              </address>
-              <a
-                href={`https://maps.google.com/?q=${encodeURIComponent([restaurant.address.line1, restaurant.address.city, restaurant.address.country].filter(Boolean).join(', '))}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600 hover:text-brand-700 transition"
-              >
-                View on Maps →
-              </a>
+              {restaurant.address && (
+                <address className="not-italic text-sm leading-relaxed text-stone-600 space-y-1">
+                  {restaurant.address.line1 && <div className="font-medium text-stone-800">{restaurant.address.line1}</div>}
+                  {restaurant.address.line2 && <div>{restaurant.address.line2}</div>}
+                  <div>{[restaurant.address.city, restaurant.address.postalCode].filter(Boolean).join(' ')}</div>
+                  <div>{restaurant.address.country}</div>
+                </address>
+              )}
+              {mapHref && (
+                <a
+                  href={mapHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600 hover:text-brand-700 transition"
+                >
+                  View on Maps →
+                </a>
+              )}
             </>
           ) : (
             <p className="text-sm text-stone-400">Address coming soon.</p>
