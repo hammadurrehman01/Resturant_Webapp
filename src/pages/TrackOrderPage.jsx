@@ -172,6 +172,36 @@ export default function TrackOrderPage() {
         </button>
       </form>
 
+      {/* ---- Recent orders (from this device) ---- */}
+      {history.length > 0 && (
+        <div className="card space-y-3">
+          <div>
+            <h2 className="text-base font-bold text-stone-900">Your recent orders</h2>
+            <p className="text-xs text-stone-500">Placed from this device — tap to track without typing the number.</p>
+          </div>
+          <ul className="divide-y divide-stone-100">
+            {history.map((h) => (
+              <li key={h.orderNumber} className="flex flex-wrap items-center justify-between gap-3 py-3">
+                <div className="min-w-0">
+                  <div className="font-mono text-sm font-semibold text-stone-900">{h.orderNumber}</div>
+                  <div className="text-xs text-stone-500">
+                    {h.placedAt ? new Date(h.placedAt).toLocaleString() : null}
+                    {h.total != null && <> · {formatMoney(h.total, h.currency || currency)}</>}
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => trackFromHistory(h)}
+                  className="btn-secondary shrink-0"
+                >
+                  Track →
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       {/* ---- Error ---- */}
       {error && (
         <div className="flex items-center gap-3 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700">
