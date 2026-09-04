@@ -31,21 +31,6 @@ export default function AboutPage() {
 
   const todayHours = hours.find((h) => h.day === TODAY_KEY);
 
-  // Prefer the exact pin the admin dropped on the map; fall back to a text
-  // address search so the button still works before a pin is set.
-  const hasLocation =
-    restaurant.location &&
-    typeof restaurant.location.lat === 'number' &&
-    typeof restaurant.location.lng === 'number';
-  const addressQuery = restaurant.address
-    ? [restaurant.address.line1, restaurant.address.city, restaurant.address.country].filter(Boolean).join(', ')
-    : '';
-  const mapHref = hasLocation
-    ? `https://www.google.com/maps/search/?api=1&query=${restaurant.location.lat},${restaurant.location.lng}`
-    : addressQuery
-      ? `https://maps.google.com/?q=${encodeURIComponent(addressQuery)}`
-      : '';
-
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-8 py-8 space-y-12">
 
@@ -129,26 +114,22 @@ export default function AboutPage() {
             <span className="text-xl">📍</span>
             <h2 className="text-base font-bold text-stone-900">Visit Us</h2>
           </div>
-          {(restaurant.address || hasLocation) ? (
+          {restaurant.address ? (
             <>
-              {restaurant.address && (
-                <address className="not-italic text-sm leading-relaxed text-stone-600 space-y-1">
-                  {restaurant.address.line1 && <div className="font-medium text-stone-800">{restaurant.address.line1}</div>}
-                  {restaurant.address.line2 && <div>{restaurant.address.line2}</div>}
-                  <div>{[restaurant.address.city, restaurant.address.postalCode].filter(Boolean).join(' ')}</div>
-                  <div>{restaurant.address.country}</div>
-                </address>
-              )}
-              {mapHref && (
-                <a
-                  href={mapHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600 hover:text-brand-700 transition"
-                >
-                  View on Maps →
-                </a>
-              )}
+              <address className="not-italic text-sm leading-relaxed text-stone-600 space-y-1">
+                {restaurant.address.line1 && <div className="font-medium text-stone-800">{restaurant.address.line1}</div>}
+                {restaurant.address.line2 && <div>{restaurant.address.line2}</div>}
+                <div>{[restaurant.address.city, restaurant.address.postalCode].filter(Boolean).join(' ')}</div>
+                <div>{restaurant.address.country}</div>
+              </address>
+              <a
+                href={`https://maps.google.com/?q=${encodeURIComponent([restaurant.address.line1, restaurant.address.city, restaurant.address.country].filter(Boolean).join(', '))}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600 hover:text-brand-700 transition"
+              >
+                View on Maps →
+              </a>
             </>
           ) : (
             <p className="text-sm text-stone-400">Address coming soon.</p>
